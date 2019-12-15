@@ -5,7 +5,7 @@ During my time at The Tech Academy I completed three live projects. Each live pr
 ## Creating a Mining Wiki
 One of the stories was to create a wiki scraping information from a specific section of a Wikipedia page.
   
-  page = requests.get("https://en.wikipedia.org/wiki/Asteroid_mining")/n
+  ##### page = requests.get("https://en.wikipedia.org/wiki/Asteroid_mining")
   soup = BeautifulSoup(page.content, 'html.parser')
   
 This code simply grabs the Wikipedia page that I took information from.
