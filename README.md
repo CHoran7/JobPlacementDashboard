@@ -1,11 +1,11 @@
 # Live Project
 ## Introduction
-I completed a Python course at The Tech Academy. At the end of this course I participated in a two week live project with other students at The Tech Academy on a project based around the Django framework. This was a website for a space bar, and students worked on different applications for the page. We used Azure Devops to collaborate and know who was working on what stories. In my time working on the project I completed a wiki page using BeautifulSoup to parse and scrape information. I also completed an app using two API's to get the sunrise and sunset for a user's location.
+During my time at The Tech Academy I completed three live projects. Each live project was worked on in a two week sprint. The first was a Python project using the Django framework. This was a website for an imaginary space bar, and students worked on different applications for the page. The next two projects were completed in C# working with in Visual Studio. This was a website page for a construction company displaying different schedules, jobs and other things their employees or admins might need. The first sprint was the web developement sprint and then the back end sprint.
 
 ## Creating a Mining Wiki
 One of the stories was to create a wiki scraping information from a specific section of a Wikipedia page.
   
-  page = requests.get("https://en.wikipedia.org/wiki/Asteroid_mining")
+  page = requests.get("https://en.wikipedia.org/wiki/Asteroid_mining")/n
   soup = BeautifulSoup(page.content, 'html.parser')
   
 This code simply grabs the Wikipedia page that I took information from.
