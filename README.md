@@ -31,7 +31,7 @@ This code is an example of grabbing the individual paragraphs and replacing the 
 
 This code is just an example of turning my text into dictionaries so I can call them later in the HTML code. It also showcases the render function that will often be used in Django.
 
-Suntracker App
+## Suntracker App
 The function of this app was merely to tell the user when the sunrises and sets at their location for the current day.
 
 ```
@@ -55,5 +55,102 @@ This is a call to the other API where location is a string containing the latitu
     
 This function will convert the time to the users timezone. The times I originally had were always in UTC which isn't convenient for the user.
 
+## Activate Job Button
+The first story I took on within the C# MVC project was creating an activate job button that an admin could use to update a job site to active. This was done using AJAX.
+
+## Save Previous Orders
+This task was the biggest challenge I took on during my project. I had to create a new model and change some others so that when someone ordered products, those orders could be saved. Creating the models just included using the correct annotations so that the models would properly bind together. 
+
+```
+namespace ManagementPortal.Models
+{
+    public class Order
+    {
+        [Key]
+        public Guid OrderId { get; set; }
+        public string User { get; set; }
+        [DisplayFormat(DataFormatString = @"{0:MM\/dd\/yyyy}", ApplyFormatInEditMode = true)]
+        [Display(Name = "DateCreated")]
+        public DateTime DateCreated { get; set; }
+        [DataType(DataType.Currency)]
+        public decimal OrderTotal { get; set; }
+
+        public virtual ICollection<CartItem> CartItems { get; set; }
+    }
+}
+```
+
+This is the order class which will appear in the database. It is properly bound to the CartItems model through the last line of code.
+
+When a user would add an item to their cart is when all the logic would happen. I needed to realize all of the cases that could occur when a user does this.
+
+```
+        // Add selected Product to CartItems
+        // Check if the user has an order going, if no, create a new order and cart item with the product
+        // If yes, we must check if there is one of that product already in the users cart
+        // If the product is in the users cart we can just update the quantity and total of the order
+        // If the product is not already in the cart we must create a new cart item
+        public ActionResult AddToCart(int id)
+        {
+            var userId = User.Identity.GetUserId().ToString();
+            var orderCheck = db.Orders.SingleOrDefault(o => o.User == userId);
+            if(orderCheck == null)
+            {
+                var order = new List<Order>()
+                {
+                    new Order()
+                    {
+                        OrderId = Guid.NewGuid(),
+                        User = userId,
+                        DateCreated = DateTime.Now,
+                        OrderTotal = db.Products.SingleOrDefault(p => p.ProductId == id).UnitPrice,
+                        CartItems = new List<CartItem>()
+                        {
+                            new CartItem()
+                            {
+                                CartItemId = Guid.NewGuid().ToString(),
+                                Quantity = 1,
+                                ProductId = id,
+                                Product = db.Products.SingleOrDefault(p => p.ProductId == id),
+                            }
+                        }
+                    }
+                };
+                order.ForEach(o => db.Orders.Add(o));
+            }
+            else
+            {
+                var cartItem = db.CartItems.SingleOrDefault(c => c.ProductId == id && c.Order.User == userId);
+                var orderTotal = db.Orders.SingleOrDefault(o => o.User == userId);
+                if (cartItem == null)
+                {
+                    var cartItems = new List<CartItem>()
+                {
+                    new CartItem()
+                    {
+                        CartItemId = Guid.NewGuid().ToString(),
+                        Quantity = 1,
+                        ProductId = id,
+                        Product = db.Products.SingleOrDefault(p => p.ProductId == id),
+                        Order = db.Orders.SingleOrDefault(o => o.User == userId)
+                    }
+                };
+                    cartItems.ForEach(c => db.CartItems.Add(c));
+                    orderTotal.OrderTotal += db.Products.SingleOrDefault(p => p.ProductId == id).UnitPrice;
+                }
+                else
+                {
+                    cartItem.Quantity++;
+                    orderTotal.OrderTotal += db.Products.SingleOrDefault(p => p.ProductId == id).UnitPrice;
+
+                }
+            }
+            
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+   ```
+   
 Other Things Learned
 Of course this was all done in the Django framework so I had to do research on how the Django framework works. This includes learning about models, views, urls and templates. All of this was necessary in order to get this project to work. I learned great communication skills from this project as well as developed my problem solving skills in coding. While this mostly involves googling things there is a certain skill to it.
