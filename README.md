@@ -58,6 +58,38 @@ This function will convert the time to the users timezone. The times I originall
 ## Activate Job Button
 The first story I took on within the C# MVC project was creating an activate job button that an admin could use to update a job site to active. This was done using AJAX.
 
+When an admin was logged into the main page of the site, they could see inactive jobs that employees could not yet see. If the job was inactive a button was presented to admin to change the job to active right from the main page. Below is the script that would run once the button was clicked.
+
+```
+function updateJob(jobIb) {
+    var form = $('#updateForm_' + jobIb);
+    if (confirm("Are you sure you would like to change this job to active?")) {
+        $.ajax({
+            url: form.attr("action"),
+            type: form.attr("method"),
+            data: form.serialize(),
+            datatype: "application/json",
+            success: function (returnJson) {
+                if (returnJson.result == "success") {
+                    location.reload();
+                }
+                else if (returnJson.result == "error") {
+                    alert("Error: " + returnJson.message);
+                }
+            },
+            error: function () {
+                
+            }
+        });
+    }
+    else {
+        return false;
+    }
+}
+```
+
+This code includes AJAX that does just reload the whole page but will be used to just update the tables containing inactive and active jobs in the future.
+
 ## Save Previous Orders
 This task was the biggest challenge I took on during my project. I had to create a new model and change some others so that when someone ordered products, those orders could be saved. Creating the models just included using the correct annotations so that the models would properly bind together. 
 
@@ -151,6 +183,10 @@ When a user would add an item to their cart is when all the logic would happen. 
             return RedirectToAction("Index");
         }
    ```
-   
-Other Things Learned
-Of course this was all done in the Django framework so I had to do research on how the Django framework works. This includes learning about models, views, urls and templates. All of this was necessary in order to get this project to work. I learned great communication skills from this project as well as developed my problem solving skills in coding. While this mostly involves googling things there is a certain skill to it.
+
+The comments in the above code break the process down as well but first we must check if the current user already has an order. If the user doesn't have an order we create a new one. If the user does have an order, it is possible that they already have one of these items stored in their cart and we can just add to the quantity. If the user hasn't added one of these items to their cart before we must create a new cart item.
+
+## Other Things Learned
+Of course the first project was done in the Django framework so I had to do research on how the Django framework works. This includes learning about models, views, urls and templates. All of this was necessary in order to get this project to work. I learned great communication skills from this project as well as developed my problem solving skills in coding.
+
+Similarly, the next project was an MVC web application in C#. I researched the MVC structure which is similar to the structure used on the Django project, but there are differences. Communication with my teachers was key so they could point me in the right direction when I was struggled and I could continue to grow and be able to solve problems on my own. It was important that the answers were never directly given because a very important part of programming is perseverance. I also think this project helped me to improve my commenting of code greatly. I used comments to lay out the logically process of if statements used. This not only helped me understand what I was doing and why, but when a future team member may have to make some changes down the line they will more quickly understand the code.
